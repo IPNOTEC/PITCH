@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPNOTEC Pitch Deck</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --black: #000000;
+            --white: #FFFFFF;
+            --grey: #CCCCCC;
+            --light-grey: #333333;
+            --green: #00FF00;
+            --orange: #FF6900;
+            --violet: #9d4edd;
+            --cyan: #00ffff;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, #111, #222);
+            color: var(--white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .frame-container {
+            width: 100%;
+            max-width: 1200px;
+            height: 80vh;
+            border: 3px solid var(--orange);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(255, 105, 0, 0.4);
+        }
+        
+        .deck-container {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            background-color: var(--black);
+            padding: 0;
+            position: relative;
+            scroll-behavior: smooth;
+        }
+        
+        .slide {
+            width: 100%;
+            min-height: 100%;
+            padding: 80px 40px 120px;
+            background-color: var(--black);
+            position: relative;
+            border-bottom: 1px solid var(--grey);
+        }
+        
+        .impact-slide {
+            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+        }
+        
+        .ask-slide {
+            background: linear-gradient(135deg, #333, #222);
+        }
+        
+        .slide-header {
+            position: absolute;
+            top: 30px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--white);
+        }
+        
+        .slide-footer {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+        
+        .footer-main {
+            color: var(--white);
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .footer-sub {
+            color: var(--orange);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            padding-right: 40px;
+        }
+        
+        .trident {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            background-color: var(--orange);
+            position: relative;
+        }
+        
+        .trident:before, .trident:after {
+            content: '';
+            position: absolute;
+            background-color: var(--orange);
+        }
+        
+        .trident:before {
+            width: 15px;
+            height: 3px;
+            top: 6px;
+            left: 0;
+        }
+        
+        .trident:after {
+            width: 3px;
+            height: 15px;
+            top: 0;
+            left: 6px;
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            text-align: center;
+            color: var(--white);
+        }
+        
+        h1 {
+            font-size: 3rem;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+        }
+        
+        h3 {
+            font-size: 1.8rem;
+            color: var(--grey);
+        }
+        
+        p, li {
+            font-size: 1.3rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            color: var(--white);
+        }
+        
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 25px 0;
+        }
+        
+        li {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 35px;
+            font-size: 1.2rem;
+        }
+        
+        li:before {
+            content: "■";
+            position: absolute;
+            left: 0;
+            color: var(--grey);
+            font-size: 1.2rem;
+        }
+        
+        .currency {
+            color: var(--green);
+            font-weight: bold;
+        }
+        
+        .highlight {
+            font-weight: bold;
+            color: var(--white);
+        }
+        
+        #pdfBtn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--orange);
+            color: var(--black);
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            z-index: 100;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+            transition: all 0.3s ease;
+        }
+        
+        #pdfBtn:hover {
+            background-color: var(--white);
+            transform: translateY(-3px);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 1.1rem;
+        }
+        
+        th, td {
+            border: 1px solid var(--grey);
+            padding: 15px;
+            text-align: left;
+            color: var(--white);
+        }
+        
+        th {
+            background-color: var(--light-grey);
+            color: var(--white);
+            font-weight: bold;
+        }
+        
+        .chart-container {
+            width: 100%;
+            height: 350px;
+            margin: 30px auto;
+        }
+        
+        .product-card {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid var(--grey);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            transition: transform 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 105, 0, 0.3);
+        }
+        
+        .product-card h3 {
+            color: var(--orange);
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        
+        .product-link {
+            color: var(--green);
+            word-break: break-all;
+            font-size: 1rem;
+            text-decoration: none;
+            display: block;
+            margin-top: 10px;
+        }
+        
+        .product-link:hover {
+            text-decoration: underline;
+        }
+        
+        .ask-box {
+            background-color: var(--black);
+            border: 3px solid var(--green);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px auto;
+            max-width: 100%;
+        }
+        
+        .ask-item {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #444;
+        }
+        
+        .ask-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .ask-amount {
+            font-size: 2.2rem;
+            color: var(--green);
+            font-weight: bold;
+        }
+        
+        .ask-description {
+            font-size: 1.3rem;
+            margin-top: 10px;
+            color: var(--white);
+        }
+        
+        .efficiency-table {
+            width: 100%;
+            margin: 35px 0;
+            border: 2px solid var(--green);
+        }
+        
+        .efficiency-table th {
+            background-color: var(--green);
+            color: var(--black);
+            font-size: 1.2rem;
+        }
+        
+        .efficiency-table td {
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .founder-link {
+            color: var(--orange);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .founder-link:hover {
+            text-decoration: underline;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            margin: 35px 0;
+            border: 2px solid var(--orange);
+        }
+        
+        .comparison-table th {
+            background-color: var(--orange);
+            color: var(--black);
+            font-size: 1.2rem;
+        }
+        
+        .comparison-table td {
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .usd-value {
+            font-size: 1rem;
+            color: var(--grey);
+            font-weight: normal;
+            display: block;
+            margin-top: 5px;
+        }
+        
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin: 35px 0;
+        }
+        
+        .impact-card {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid var(--grey);
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .impact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 105, 0, 0.2);
+        }
+        
+        .impact-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--orange);
+            margin-bottom: 15px;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .impact-label {
+            font-size: 1.3rem;
+            color: var(--white);
+        }
+        
+        .validation-section {
+            margin: 35px 0;
+        }
+        
+        .validation-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+        
+        .validation-item {
+            flex: 1;
+            text-align: center;
+            padding: 20px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid var(--grey);
+            border-radius: 10px;
+        }
+        
+        .validation-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--green);
+            margin-bottom: 10px;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .validation-text {
+            font-size: 1.1rem;
+        }
+        
+        .problem-breakdown {
+            margin: 35px 0;
+        }
+        
+        .problem-breakdown h3 {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        
+        .problem-breakdown ul {
+            margin-left: 30px;
+        }
+        
+        .problem-breakdown li {
+            padding-left: 20px;
+        }
+        
+        .problem-breakdown li:before {
+            color: var(--orange);
+        }
+        
+        .pitfall-comparison {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 35px;
+            gap: 25px;
+        }
+        
+        .pitfall-column {
+            flex: 1;
+            padding: 20px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid var(--grey);
+            border-radius: 10px;
+        }
+        
+        .pitfall-column h4 {
+            color: var(--orange);
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+        
+        .pitfall-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .pitfall-list li {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .pitfall-list li:before {
+            content: "▹";
+            position: absolute;
+            left: 0;
+            color: var(--green);
+            font-size: 1.3rem;
+        }
+        
+        .example {
+            color: #999;
+            font-size: 1rem;
+            margin-top: 10px;
+            margin-left: 35px;
+            font-style: italic;
+        }
+        
+        .product-explanation {
+            color: #999;
+            font-size: 1rem;
+            margin-top: 15px;
+            font-style: italic;
+        }
+        
+        .shimmering-text {
+            background: linear-gradient(90deg, var(--violet), var(--cyan), var(--white));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: bold;
+            font-size: 1.8rem;
+            animation: shimmer 3s infinite;
+            background-size: 200% auto;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200px 0; }
+            100% { background-position: 200px 0; }
+        }
+        
+        .ipnotec-text {
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+        
+        .cover-title {
+            font-size: 1.8rem;
+            color: var(--grey);
+            text-align: center;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .cover-footer {
+            position: absolute;
+            bottom: 80px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            color: var(--orange);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        
+        .boombox-logo {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--violet), var(--cyan), var(--white));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: pulse 1s infinite;
+            background-size: 200% auto;
+            letter-spacing: 3px;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.7; transform: scale(1); }
+        }
+        
+        .expand-btn {
+            background: transparent;
+            border: 1px solid var(--orange);
+            color: var(--orange);
+            padding: 8px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .expand-btn:hover {
+            background-color: var(--orange);
+            color: var(--black);
+        }
+        
+        .expand-content {
+            display: none;
+            padding: 15px;
+            margin-top: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            border-left: 3px solid var(--orange);
+        }
+        
+        .slide-navigation {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 90;
+        }
+        
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-dot.active {
+            background: var(--orange);
+            transform: scale(1.3);
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            h3 {
+                font-size: 1.4rem;
+            }
+            
+            p, li {
+                font-size: 1.1rem;
+            }
+            
+            table {
+                font-size: 0.9rem;
+            }
+            
+            .slide {
+                padding: 70px 20px 100px;
+            }
+            
+            .ask-amount {
+                font-size: 1.8rem;
+            }
+            
+            .ask-description {
+                font-size: 1.1rem;
+            }
+            
+            .chart-container {
+                height: 280px;
+            }
+            
+            #pdfBtn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+            
+            .impact-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .validation-row {
+                flex-direction: column;
+            }
+            
+            .validation-item {
+                margin: 10px 0;
+            }
+            
+            .pitfall-comparison {
+                flex-direction: column;
+            }
+            
+            .pitfall-column {
+                margin: 15px 0;
+            }
+            
+            .cover-footer {
+                font-size: 1.8rem;
+                bottom: 60px;
+            }
+            
+            .boombox-logo {
+                font-size: 2.5rem;
+                top: 20px;
+                left: 20px;
+            }
+            
+            .footer-sub {
+                justify-content: center;
+                padding-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-navigation" id="slideNav">
+        <div class="nav-dot active" data-slide="1"></div>
+        <div class="nav-dot" data-slide="2"></div>
+        <div class="nav-dot" data-slide="3"></div>
+        <div class="nav-dot" data-slide="4"></div>
+        <div class="nav-dot" data-slide="5"></div>
+        <div class="nav-dot" data-slide="6"></div>
+        <div class="nav-dot" data-slide="7"></div>
+        <div class="nav-dot" data-slide="8"></div>
+        <div class="nav-dot" data-slide="9"></div>
+        <div class="nav-dot" data-slide="10"></div>
+        <div class="nav-dot" data-slide="11"></div>
+        <div class="nav-dot" data-slide="12"></div>
+        <div class="nav-dot" data-slide="13"></div>
+    </div>
+    
+    <div class="frame-container">
+        <div class="deck-container">
+            <!-- Slide 1: Cover -->
+            <div class="slide" id="slide1">
+                <div class="boombox-logo">I0 0I</div>
+                <h1>IPNOTEC</h1>
+                <p style="text-align: center; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 3px;">FROM NOTHING COMES EVERYTHING</p>
+                <div class="cover-title">EVERYTHING YOU NEED ON IPNOTEC'S WATCH</div>
+                <div class="cover-footer">Redefining Human-Tech Interaction</div>
+                <div class="slide-footer">
+                    <div class="footer-sub"><a href="https://linktr.ee/BharathBholeY" class="founder-link">Bharath BholeY</a> <span class="trident"></span></div>
+                </div>
+            </div>
+            
+            <!-- Slide 2: Problem -->
+            <div class="slide" id="slide2">
+                <h2>The Problem</h2>
+                <ul>
+                    <li>Fragmented tech ecosystems create inefficiency
+                        <div class="example">Example: Switching between 5+ apps to manage a smart home</div>
+                    </li>
+                    <li>Smartphones have become distracting necessities
+                        <div class="example">Example: Average user checks phone 96 times/day</div>
+                    </li>
+                    <li>Entrepreneurs lack integrated support networks
+                        <div class="example">Example: Founders struggle to find mentors and investors</div>
+                    </li>
+                    <li>India's <span class="currency">₹500 Crores</span> <span class="usd-value">($60M)</span> startup ecosystem needs better infrastructure
+                        <div class="example">IPNOTEC Solution: Create dedicated tech-integrated hubs</div>
+                    </li>
+                </ul>
+                <div class="slide-footer">
+                    <div class="footer-sub"><a href="https://linktr.ee/BharathBholeY" class="founder-link">Bharath BholeY</a> <span class="trident"></span></div>
+                </div>
+            </div>
+            
+            <!-- Slide 3: Quantified Problem Impact -->
+            <div class="slide impact-slide" id="slide3">
+                <h2>Quantified Problem Impact</h2>
+                
+                <div class="impact-grid">
+                    <div class="impact-card">
+                        <div class="impact-number">2-3 hours</div>
+                        <div class="impact-label">Daily productivity loss per professional</div>
+                        <button class="expand-btn">Show Example</button>
+                        <div class="expand-content">
+                            Professionals spend 2-3 hours daily switching between apps and devices, leading to significant workflow disruption.
+                        </div>
+                    </div>
+                    <div class="impact-card">
+                        <div class="impact-number">75%</div>
+                        <div class="impact-label">Report decreased focus</div>
+                        <button class="expand-btn">Show Example</button>
+                        <div class="expand-content">
+                            3 out of 4 professionals report constant distractions from notifications and app switching, reducing their ability to concentrate.
+                        </div>
+                    </div>
+                    <div class="impact-card">
+                        <div class="impact-number">60%</div>
+                        <div class="impact-label">Experience decision fatigue</div>
+                        <button class="expand-btn">Show Example</button>
+                        <div class="expand-content">
+                            Majority of entrepreneurs report exhaustion from managing multiple platforms daily, leading to poor decision-making.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="validation-section">
+                    <h3>Evidence-Based Validation</h3>
+                    <div class="validation-row">
+                        <div class="validation-item">
+                            <div class="validation-number">15-20</div>
+                            <div class="validation-text">Daily distraction events</div>
+                        </div>
+                        <div class="validation-item">
+                            <div class="validation-number">4.2/5</div>
+                            <div class="validation-text">Impact rating on productivity</div>
+                        </div>
+                        <div class="validation-item">
+                            <div class="validation-number">₹1,200 Cr</div>
+                            <div class="validation-text">Annual economic loss</div>
+                        </div>
+                    </div>
+                    
+                    <div class="validation-row">
+                        <div class="validation-item">
+                            <div class="validation-number">75M</div>
+                            <div class="validation-text">Potential users</div>
+                        </div>
+                        <div class="validation-item">
+                            <div class="validation-number">82%</div>
+                            <div class="validation-text">Entrepreneurs report pain points</div>
+                        </div>
+                        <div class="validation-item">
+                            <div class="validation-number">₹20,875 Cr</div>
+                            <div class="validation-text">Productivity tech market (SAM)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="problem-breakdown">
+                    <h3>Problem-Solution Fit Validation</h3>
+                    <ul>
+                        <li>Virtual PC MVP testing core value proposition</li>
+                        <li>Networking Terminal prototype validating community need</li>
+                        <li>Multiverse game testing engagement mechanics</li>
+                        <li>Following UrbanClap/Housing.com model of quantifying problems</li>
+                    </ul>
+                </div>
+                
+                <div class="pitfall-comparison">
+                    <div class="pitfall-column">
+                        <h4>Common Pitfalls</h4>
+                        <ul class="pitfall-list">
+                            <li>"We need better productivity tools"</li>
+                            <li>"Tech is problematic" (vague)</li>
+                            <li>Quick fixes without addressing root causes</li>
+                        </ul>
+                    </div>
+                    <div class="pitfall-column">
+                        <h4>IPNOTEC Approach</h4>
+                        <ul class="pitfall-list">
+                            <li>"Professionals lose 2-3 hours daily" (specific)</li>
+                            <li>"75% report decreased focus" (evidence-based)</li>
+                            <li>Systemic solution through integrated TRIAD ecosystem</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="slide-footer">
+                    <div class="footer-sub"><a href="https://linktr.ee/BharathBholeY" class="founder-link">Bharath BholeY</a> <span class="trident"></span></div>
+                </div>
+            </div>
+            
+            <!-- Slide 4: Solution -->
+            <div class="slide" id="slide4">
+                <h2>Our Solution</h2>
+                <h3>The IPNOTEC TRIAD</h3>
+                <div class="chart-container">
+                    <canvas id="triadChart"></canvas>
+                </div>
+                <ul>
+                    <li>Phone-less productivity through wearables
+                        <div class="example">IPNOTEC Solution: AR glasses replacing phone screens</div>
+                    </li>
+                    <li>Unified IoT ecosystem for seamless living
+                        <div class="example">IPNOTEC Solution: Single app controlling all smart devices</div>
+                    </li>
+                    <li>Curated entrepreneur networks
+                        <div class="example">IPNOTEC Solution: Verified founder/investor matching</div>
+                    </li>
+                </ul>
+                <div class="slide-footer">
+                    <div class="footer-sub"><a href="https://linktr.ee/BharathBholeY" class="founder-link">Bharath BholeY</a> <span class="trident"></span></div>
+                </div>
+            </div>
+            
+            <!-- Slide 5: Market -->
+            <div class="slide" id="slide5">
+                <h2>Market Opportunity</h2>
+                <table>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Total Addressable Market (TAM)</td>
+                        <td><span class="currency">₹83.5 Lakh Crores</span> <span class="usd-value">($1T)</span> (India's Digital Economy by 2025)</td>
+                    </tr>
+                    <tr>
+                        <td>Serviceable Available Market (SAM)</td>
+                        <td><span class="currency">₹20,875 Crores</span> <span class="usd-value">($2.5B)</span> (Productivity Tech Market)</td>
+                    </tr>
+                    <tr>
+                        <td>Serviceable Obtainable Market (SOM)</td>
+                        <td><span class="currency">₹4,175 Crores</span> <span class="usd-value">($500M)</span> (20% of SAM in Year 1-3)</td>
+                    </tr>
+                    <tr>
+                        <td>Potential Users</td>
+                        <td>75 Million (Digital Professionals & Startups)</td>
+                    </tr>
+                </table>
+                <div class="slide-footer">
+                    <div class="footer-sub"><a href="https://linktr.ee/BharathBholeY" class="founder-link">Bharath BholeY</a> <span class="trident"></span></div>
+                </div>
+            </div>
+            
+            <!-- Slide 6: Product -->
+            <div class="slide" id="slide6">
+                <h2>Product Stack</h2>
+                <ul>
+                    <li><span class="highlight">Smart Eyewear</span> - Custom AR interfaces</li>
+                    <li><span class="highlight">Smart Watch</span> - Phone-less essential device</li>
+                    <li><span class="highlight">Cloud Tops</span> - Affordable virtual PCs</li>
+                    <li><span class="highlight">Smart Cubicles</span> - 10Ft×10Ft with 3D printer</li>
+                    <li><span class="highlight">IoT Homes/Hubs</span> - Integrated living spaces</li>
+                </ul>
+                <p style="text-align: center; font-size: 1.8rem; margin-top: 30px;">Pioneering the <span class="highlight">Phone-less Revolution</span></p>
+                <div class="slide-footer">
+                    <div class="footer-sub"><a href="https://linktr.ee/BharathBholeY" class="founder-link">Bharath BholeY</a> <span class="trident"></span></div>
+                </div>
+            </div>
+            
+            <!-- Slide 7: Competitive Advantage -->
+            <div class="slide" id="slide7">
+                <h2>Competitive Advantage</h2>
+                <table class="comparison-table">
+                    <tr>
+                        <th>Company</th>
+                        <th>Focus Area</th>
+                        <th>IPNOTEC Differentiation</th>
+                    </tr>
+                    <tr>
+                        <td>MyGate</td>
+                        <td>Residential Security</td>
+                        <td>Full IoT ecosystem beyond security</td>
+                    </tr>
+                    <tr>
+                        <td>WeWork</td>
+                        <td>Co-working Spaces</td>
+                        <td>Smart tech-integrated productivity hubs</td>
+                    </tr>
+                    <tr>
+                        <td>Zostel</td>
+                        <td>Budget Accommodation</td>
+                        <td>Entrepreneur-focused IoT living spaces</td>
+                    </tr>
+                </table>
+                <p style="text-align: center; font-size: 1.8rem; margin-top: 30px;">
+                    <span class="highlight">UNIQUE VALUE:</span> Integrated hardware/IoT ecosystem enabling phone-less productivity
+                </p>
+                <div class="slide-footer">
+                    <div class="footer-sub"><a href="https://linktr.ee/BharathBholeY" class="founder-link">Bharath BholeY</a> <span class="trident"></span></div>
+                </div>
+            </div>
+            
+            <!-- Slide 8: Current Prototypes -->
+            <div class="slide" id="slide8">
+                <h2>Current Prototypes</h2>
+                
+                <div class="product-card">
+                    <h3>IPNOTEC Virtual PC + Profile</h3>
+                    <p>One-time installation: <span class="currency">₹1001</span> <span class="usd-value">($12)</span></p>
+                    <a href="https://i-pc.vercel.app" class="product-link" target="_blank">https://i-pc.vercel.app</a>
+                    <div class="product-explanation">
+                        One ID + One time installation ₹1001 + Monthly ₹101<br>
+                        Integrated VIP Address Book, Astrology with tech inputs, Expense evaluator generating PREDICT CARDS, IPNOTEC Event Dashboard
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <h3>1-CRORE CLUB</h3>
+                    <p>Pay-as-you-go model</p>
+                    <a href="https://1-cc.vercel.app/" class="product-link" target="_blank">https://1-cc.vercel.app/</a>
+                    <div class="product-explanation">
+                        Different tiers with increasing access and features: Bronze, Silver, Gold, Platinum
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <h3>IPNOTEC Multiverse</h3>
+                    <p>Productivity game for entrepreneurs</p>
+                    <a href="https://future-11-game.vercel.app" class="product-link" target="_blank">https://future-11-game.vercel.app</a>
+                    <a href="https://multiverse-rosy.vercel.app" class="product-link" target="_blank">https://multiverse-rosy.vercel.app</a>
+                    <div class="product-explanation">
+                        Games like Future 11, AVATARS and digital gamified experience with leaderboards and achievements
+                    </div>
+                </div>
+                
+                <div class="slide-footer">
+                    <div class="footer-sub"><a href="https://linktr.ee/BharathBholeY" class="founder-link">Bharath BholeY</a> <span class="trident"></span></div>
+                </div>
+            </div>
+            
+            <!-- Slide 9: GTM Stage 1 -->
+            <div class="slide" id="slide9">
+                <h2>Go-To-Market: Stage 1</h2>
+                <h3>Virtual PC & Networking Platform</h3>
+                
+                <table>
+                    <tr>
+                        <th>User Count</th>
+                        <th>One-time Revenue</th>
+                        <th>Monthly Revenue</th>
+                        <th>Annual Revenue</th>
+                    </tr>
+                    <tr>
+                        <td>500 users</td>
+                        <td><span class="currency">₹5.0 Lakhs</span> <span class="usd-value">($6K)</span></td>
+                        <td><span class="currency">₹50,500</span> <span class="usd-value">($605)</span></td>
+                        <td><span class="currency">₹11.06 Lakhs</span> <span class="usd-value">($13.2K)</span></td>
+                    </tr>
+                    <tr>
+                        <td>1,500 users</td>
+                        <td><span class="currency">₹15.0 Lakhs</span> <span class="usd-value">($18K)</span></td>
+                        <td><span class="currency">₹1.51 Lakhs</span> <span class="usd-value">($1.8K)</span></td>
+                        <td><span class="currency">₹33.2 Lakhs</span> <span class="usd-value">($40K)</span></td>
+                    </tr>
+                    <tr>
+                        <td>3,000 users</td>
+                        <td><span class="currency">₹30.0 Lakhs</span> <span class="usd-value">($36K)</span></td>
+                        <td><span class="currency">₹3.03 Lakhs</span> <span class="usd-value">($3.6K)</span></td>
+                        <td><span class="currency">₹66.4 Lakhs</span> <span class="usd-value">($80K)</span></td>
+                    </tr>
+                </table>
+                
+                <p style="text-align: center; font-size: 1.8rem; margin-top: 30px;">Break-even at <span class="highlight">1,000 users</span> (covering development costs)</p>
+                
+                <div class="slide-footer">
+                    <div class="footer-sub"><a href="https://linktr.ee/BharathBholeY" class="founder-link">Bharath BholeY</a> <span class="trident"></span></div>
+                </div>
+            </div>
+            
+            <!-- Slide 10: GTM Stage 2 -->
+            <div class="slide" id="slide10">
+                <h2>Go-To-Market: Stage 2</h2>
+                <h3>Premium Memberships</h3>
+                
+                <table>
+                    <tr>
+                        <th>Tier</th>
+                        <th>Price</th>
+                        <th>300 Users</th>
+                        <th>Annual Revenue</th>
+                    </tr>
+                    <tr>
+                        <td>Co-working</td>
+                        <td><span class="currency">₹10,001/mo</span> <span class="usd-value">($120)</span></td>
+                        <td>5% conversion</td>
+                        <td><span class="currency">₹18 Lakhs</span> <span class="usd-value">($21.6K)</span></td>
+                    </tr>
+                    <tr>
+                        <td>Corporate</td>
+                        <td><span class="currency">₹1,00,001/mo</span> <span class="usd-value">($1.2K)</span></td>
+                        <td>1% conversion</td>
+                        <td><span class="currency">₹36 Lakhs</span> <span class="usd-value">($43.2K)</span></td>
+                    </tr>
+                </table>
+                
+                <p style="text-align: center; font-size: 1.8rem; margin-top: 30px;">Projected <span class="highlight">₹54 Lakhs annual revenue</span> <span class="usd-value">($64.8K)</span> from premium tiers</p>
+                
+                <div class="slide-footer">
+                    <div class="footer-sub"><a href="https://linktr.ee/BharathBholeY" class="founder-link">Bharath BholeY</a> <span class="trident"></span></div>
+                </div>
+            </div>
+            
+            <!-- Slide 11: GTM Stage 3 -->
+            <div class="slide" id="slide11">
+                <h2>Go-To-Market: Stage 3</h2>
+                <h3>Equity-Based Memberships</h3>
+                
+                <table>
+                    <tr>
+                        <th>Tier</th>
+                        <th>Investment</th>
+                        <th>Availability</th>
+                        <th>Total Potential</th>
+                    </tr>
+                    <tr>
+                        <td>Investor</td>
+                        <td><span class="currency">₹10 Lakhs</span> <span class="usd-value">($12K)</span></td>
+                        <td>100 slots</td>
+                        <td><span class="currency">₹100 Crores</span> <span class="usd-value">($12M)</span></td>
+                    </tr>
+                    <tr>
+                        <td>Partner X</td>
+                        <td><span class="currency">₹1 Crore</span> <span class="usd-value">($120K)</span></td>
+                        <td>10 per city</td>
+                        <td><span class="currency">₹50 Crores</span> <span class="usd-value">($6M)</span></td>
+                    </tr>
+                    <tr>
+                        <td>Alpha</td>
+                        <td><span class="currency">₹10 Crores</span> <span class="usd-value">($1.2M)</span></td>
+                        <td>1 per city</td>
+                        <td><span class="currency">₹50 Crores</span> <span class="usd-value">($6M)</span></td>
+                    </tr>
+                </table>
+                
+                <p style="text-align: center; font-size: 1.8rem; margin-top: 30px;">Creating <span class="highlight">exclusive ownership opportunities</span></p>
+                
+                <div class="slide-footer">
+                    <div class="footer-sub"><a href="https://linktr.ee/BharathBholeY" class="founder-link">Bharath BholeY</a> <span class="trident"></span></div>
+                </div>
+            </div>
+            
+            <!-- Slide 12: Financial Projections -->
+            <div class="slide" id="slide12">
+                <h2>Financial Projections</h2>
+                <div class="chart-container">
+                    <canvas id="financialChart"></canvas>
+                </div>
+                <p style="text-align: center; font-size: 1.8rem; margin-top: 20px;">3-Year Revenue Projection (in <span class="currency">₹ Crores</span>)</p>
+                <div class="slide-footer">
+                    <div class="footer-sub"><a href="https://linktr.ee/BharathBholeY" class="founder-link">Bharath BholeY</a> <span class="trident"></span></div>
+                </div>
+            </div>
+            
+            <!-- Slide 13: Ask -->
+            <div class="slide ask-slide" id="slide13">
+                <h2 style="color: var(--white);">Investment Opportunity</h2>
+                
+                <div class="ask-box">
+                    <div class="ask-item">
+                        <div class="ask-amount">₹12 Crores <span class="usd-value">($1.44M)</span></div>
+                        <div class="ask-description">For 9% equity - City MVP + Property Purchases</div>
+                    </div>
+                    
+                    <div class="ask-item">
+                        <div class="ask-amount">₹3 Crores <span class="usd-value">($360K)</span></div>
+                        <div class="ask-description">For 1% equity - 18 months rental + Full tech stack</div>
+                    </div>
+                    
+                    <div class="ask-item">
+                        <div class="ask-amount">₹1.08 Crores <span class="usd-value">($129K)</span></div>
+                        <div class="ask-description">For 1% equity - Incubation + CORP Module</div>
+                    </div>
+                </div>
+                
+                <!-- Efficiency Table -->
+                <table class="efficiency-table">
+                    <tr>
+                        <th>Investment</th>
+                        <th>Time Saved</th>
+                        <th>Resources Gained</th>
+                        <th>Energy Saved</th>
+                    </tr>
+                    <tr>
+                        <td>₹12 Crores ($1.44M)</td>
+                        <td>6 Years</td>
+                        <td>Full city infrastructure</td>
+                        <td>80% efficiency gain</td>
+                    </tr>
+                    <tr>
+                        <td>₹3 Crores ($360K)</td>
+                        <td>3 Years</td>
+                        <td>Complete tech stack</td>
+                        <td>60% efficiency gain</td>
+                    </tr>
+                    <tr>
+                        <td>₹1.08 Crores ($129K)</td>
+                        <td>2 Years</td>
+                        <td>Core team + MVP</td>
+                        <td>40% efficiency gain</td>
+                    </tr>
+                </table>
+                
+                <p style="text-align: center; font-size: 2rem; color: var(--white); margin-top: 30px;">
+                    Projected <span class="highlight">10x ROI in 36 months</span>
+                </p>
+                
+                <div class="slide-footer">
+                    <div class="footer-sub">
+                        <span class="shimmering-text">STEP INTO THE FUTURE</span>
+                        <a href="https://linktr.ee/BharathBholeY" class="founder-link">Bharath BholeY</a>
+                        <span class="trident"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <button id="pdfBtn">I0 0I</button>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Charts
+            const triadCtx = document.getElementById('triadChart').getContext('2d');
+            const triadChart = new Chart(triadCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Smart Hardware', 'IoT Platform', 'Networking'],
+                    datasets: [{
+                        label: 'Market Potential (Indexed)',
+                        data: [60, 80, 70],
+                        backgroundColor: [
+                            'rgba(255, 105, 0, 0.7)',
+                            'rgba(0, 255, 0, 0.7)',
+                            'rgba(204, 204, 204, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 105, 0, 1)',
+                            'rgba(0, 255, 0, 1)',
+                            'rgba(204, 204, 204, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                font: {
+                                    size: 14,
+                                    family: 'Rajdhani',
+                                    weight: 'bold'
+                                },
+                                color: '#FFFFFF'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    size: 14,
+                                    family: 'Rajdhani',
+                                    weight: 'bold'
+                                },
+                                color: '#FFFFFF'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            const financialCtx = document.getElementById('financialChart').getContext('2d');
+            const financialChart = new Chart(financialCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Year 1', 'Year 2', 'Year 3'],
+                    datasets: [{
+                        label: 'Revenue (₹ Crores)',
+                        data: [1.2, 6.0, 12.0],
+                        borderColor: 'rgba(0, 255, 0, 1)',
+                        backgroundColor: 'rgba(0, 255, 0, 0.1)',
+                        borderWidth: 4,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                font: {
+                                    size: 14,
+                                    family: 'Rajdhani',
+                                    weight: 'bold'
+                                },
+                                color: '#FFFFFF'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    size: 14,
+                                    family: 'Rajdhani',
+                                    weight: 'bold'
+                                },
+                                color: '#FFFFFF'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                font: {
+                                    size: 14,
+                                    family: 'Rajdhani',
+                                    weight: 'bold'
+                                },
+                                color: '#FFFFFF'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Expandable content functionality
+            const expandBtns = document.querySelectorAll('.expand-btn');
+            expandBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    if (content.style.display === 'block') {
+                        content.style.display = 'none';
+                        this.textContent = 'Show Example';
+                    } else {
+                        content.style.display = 'block';
+                        this.textContent = 'Hide Example';
+                    }
+                });
+            });
+            
+            // Navigation dots functionality
+            const navDots = document.querySelectorAll('.nav-dot');
+            const slides = document.querySelectorAll('.slide');
+            
+            function updateNavDots(currentSlide) {
+                navDots.forEach((dot, index) => {
+                    if (index === currentSlide) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                });
+            }
+            
+            navDots.forEach((dot, index) => {
+                dot.addEventListener('click', function() {
+                    slides[index].scrollIntoView({ behavior: 'smooth' });
+                    updateNavDots(index);
+                });
+            });
+            
+            // Handle scroll events to update navigation dots
+            let currentSlideIndex = 0;
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        currentSlideIndex = Array.from(slides).indexOf(entry.target);
+                        updateNavDots(currentSlideIndex);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            slides.forEach(slide => {
+                observer.observe(slide);
+            });
+            
+            // PDF Generation
+            document.getElementById('pdfBtn').addEventListener('click', function() {
+                const element = document.createElement('div');
+                element.style.width = '100%';
+                element.style.padding = '20px';
+                element.style.backgroundColor = 'black';
+                
+                // Clone all slides with print styling
+                const slides = document.querySelectorAll('.slide');
+                slides.forEach(slide => {
+                    const clone = slide.cloneNode(true);
+                    
+                    // Remove canvas elements and replace with images
+                    const canvases = clone.querySelectorAll('canvas');
+                    canvases.forEach(canvas => {
+                        const img = document.createElement('img');
+                        img.src = canvas.toDataURL('image/png');
+                        img.style.maxWidth = '100%';
+                        img.style.height = 'auto';
+                        canvas.parentNode.replaceChild(img, canvas);
+                    });
+                    
+                    // Adjust styling for print
+                    clone.style.margin = '0';
+                    clone.style.padding = '80px 40px';
+                    clone.style.width = '100%';
+                    clone.style.minHeight = 'auto';
+                    clone.style.height = 'auto';
+                    clone.style.boxShadow = 'none';
+                    clone.style.pageBreakAfter = 'always';
+                    clone.style.position = 'relative';
+                    clone.style.backgroundColor = 'black';
+                    clone.style.border = '1px solid #333';
+                    
+                    if (clone.classList.contains('ask-slide')) {
+                        clone.style.backgroundColor = '#333333';
+                    } else if (clone.classList.contains('impact-slide')) {
+                        clone.style.backgroundColor = '#1a1a1a';
+                    } else {
+                        clone.style.backgroundColor = 'black';
+                    }
+                    
+                    // Add footer for print
+                    const footer = document.createElement('div');
+                    footer.style.position = 'absolute';
+                    footer.style.bottom = '30px';
+                    footer.style.left = '0';
+                    footer.style.width = '100%';
+                    footer.style.textAlign = 'center';
+                    
+                    const footerSub = document.createElement('div');
+                    footerSub.style.color = '#FF6900';
+                    footerSub.style.fontSize = '0.9rem';
+                    footerSub.style.display = 'flex';
+                    footerSub.style.alignItems = 'center';
+                    footerSub.style.justifyContent = 'flex-end';
+                    footerSub.style.paddingRight = '40px';
+                    footerSub.style.gap = '10px';
+                    
+                    if (slide.id === 'slide13') {
+                        const shimmeringText = document.createElement('span');
+                        shimmeringText.className = 'shimmering-text';
+                        shimmeringText.textContent = 'STEP INTO THE FUTURE';
+                        
+                        const founderLink = document.createElement('a');
+                        founderLink.href = 'https://linktr.ee/BharathBholeY';
+                        founderLink.className = 'founder-link';
+                        founderLink.textContent = 'Bharath BholeY';
+                        founderLink.style.color = '#FF6900';
+                        founderLink.style.textDecoration = 'none';
+                        
+                        const trident = document.createElement('span');
+                        trident.className = 'trident';
+                        
+                        footerSub.appendChild(shimmeringText);
+                        footerSub.appendChild(founderLink);
+                        footerSub.appendChild(trident);
+                    } else {
+                        const founderLink = document.createElement('a');
+                        founderLink.href = 'https://linktr.ee/BharathBholeY';
+                        founderLink.className = 'founder-link';
+                        founderLink.textContent = 'Bharath BholeY';
+                        founderLink.style.color = '#FF6900';
+                        founderLink.style.textDecoration = 'none';
+                        
+                        const trident = document.createElement('span');
+                        trident.className = 'trident';
+                        
+                        footerSub.appendChild(founderLink);
+                        footerSub.appendChild(trident);
+                    }
+                    
+                    footer.appendChild(footerSub);
+                    clone.appendChild(footer);
+                    
+                    element.appendChild(clone);
+                });
+                
+                const opt = {
+                    margin: 15,
+                    filename: 'IPNOTEC_Pitch_Deck.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { 
+                        scale: 2,
+                        logging: true,
+                        useCORS: true,
+                        allowTaint: true,
+                        letterRendering: true,
+                        backgroundColor: '#000000'
+                    },
+                    jsPDF: { 
+                        unit: 'mm', 
+                        format: 'a4', 
+                        orientation: 'portrait',
+                        putOnlyUsedFonts: true
+                    },
+                    pagebreak: { 
+                        mode: ['avoid-all', 'css', 'legacy'] 
+                    }
+                };
+                
+                // Generate PDF
+                html2pdf().set(opt).from(element).save();
+            });
+        });
+    </script>
+</body>
+</html>
